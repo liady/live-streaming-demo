@@ -1,1 +1,1 @@
-import './streaming-client-api.js';
+import './video-lag-demo.js';
