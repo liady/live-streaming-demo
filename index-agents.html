@@ -32,8 +32,32 @@
       </div>
 
       <div id="video-wrapper">
-        <div>
-          <video id="video-element" width="400" height="400" src="" autoplay loop muted class="animated"></video>
+        <div style="display: flex; gap: 20px">
+          <video id="video-element" width="200" height="200" src="" autoplay loop muted class="animated"></video>
+          <div class="video-overlay" style="position: relative">
+            <video
+              id="video-element-delayed-1"
+              style="position: absolute"
+              width="200"
+              height="200"
+              src=""
+              autoplay
+              loop
+              muted
+              class="animated"
+            ></video>
+            <video
+              id="video-element-delayed-2"
+              style="position: absolute"
+              width="200"
+              height="200"
+              src=""
+              autoplay
+              loop
+              muted
+              class="animated"
+            ></video>
+          </div>
         </div>
       </div>
 

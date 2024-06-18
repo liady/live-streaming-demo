@@ -1,6 +1,6 @@
 'use strict';
-const fetchJsonFile = await fetch('./api.json');
-const DID_API = await fetchJsonFile.json();
+import DID_API from './api.json' assert { type: 'json' };
+import { stopAllVideos, playDelayedVideo } from './delay.js';
 
 if (DID_API.key == '🤫') alert('Please put your api key inside ./api.json and restart..');
 
@@ -20,6 +20,7 @@ let lastBytesReceived;
 let agentId;
 let chatId;
 
+/** @type {HTMLVideoElement} */
 const videoElement = document.getElementById('video-element');
 videoElement.setAttribute('playsinline', '');
 const peerStatusLabel = document.getElementById('peer-status-label');
@@ -146,11 +147,12 @@ function onVideoStatusChange(videoIsPlaying, stream) {
   let status;
   if (videoIsPlaying) {
     status = 'streaming';
-
     const remoteStream = stream;
+    playDelayedVideo(remoteStream);
     setVideoElement(remoteStream);
   } else {
     status = 'empty';
+    stopAllVideos();
     playIdleVideo();
   }
   streamingStatusLabel.innerText = status;
@@ -172,7 +174,7 @@ function onTrack(event) {
   statsIntervalId = setInterval(async () => {
     const stats = await peerConnection.getStats(event.track);
     stats.forEach((report) => {
-      if (report.type === 'inbound-rtp' && report.kind === 'video') {
+      if (report.type === 'inbound-rtp' && report.mediaType === 'video') {
         const videoStatusChanged = videoIsPlaying !== report.bytesReceived > lastBytesReceived;
 
         if (videoStatusChanged) {
@@ -375,7 +377,7 @@ destroyButton.onclick = async () => {
 async function agentsAPIworkflow() {
   agentIdLabel.innerHTML = `<span style='color:orange'>Processing...<style='color:orange'>`;
   chatIdLabel.innerHTML = `<span style='color:orange'>Processing...<style='color:orange'>`;
-  axios.defaults.baseURL = `${DID_API.url}`;
+  axios.defaults.baseURL = 'https://api.d-id.com/';
   axios.defaults.headers.common['Authorization'] = `Basic ${DID_API.key}`;
   axios.defaults.headers.common['content-type'] = 'application/json';
 
@@ -506,5 +508,5 @@ agentsButton.onclick = async () => {
 };
 
 // Paste Your Created Agent and Chat IDs Here:
-agentId = '';
+agentId = 'agt_t7V7EWMz';
 chatId = '';
